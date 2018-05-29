@@ -4,12 +4,25 @@ import math
 # Auto-generated code below aims at helping you parse
 # the standard input according to the problem statement.
 
+zonr_d = 0
+zone_f = 0
+zone_a = 0
+
 surface_n = int(input())  # the number of points used to draw the surface of Mars.
+old_a = -1 old_x
 for i in range(surface_n):
     # land_x: X coordinate of a surface point. (0 to 6999)
     # land_y: Y coordinate of a surface point. By linking all the points together in a sequential fashion, you form the surface of Mars.
     land_x, land_y = [int(j) for j in input().split()]
+    if(old_a == land_y):
+        zone_d = old_x
+        zone_f = land_x
+        zone_a = land_y
+    old_x = land_x
+    old_a = land_y
+        
 
+print(land_x, land_y, file=sys.stderr)
 # game loop
 while True:
     # h_speed: the horizontal speed (in m/s), can be negative.

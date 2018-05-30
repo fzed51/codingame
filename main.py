@@ -4,21 +4,21 @@ import math
 # Auto-generated code below aims at helping you parse
 # the standard input according to the problem statement.
 
+
+def console(*message):
+    print(*message, file=sys.stderr)
+
+
 l = int(input())
 h = int(input())
 t = str(input())
 f = list()
 for i in range(h):
-    f.append(input())
-
-
-def console(*message)
-    print(*message, file=sys.stderr)
+    z = input()
+    f.append(z)
 
 
 class Ascii:
-    """Classe de mise en forme ascii art
-    """
 
     def __init__(self, l, h, font):
         self.l = int(l)
@@ -36,8 +36,7 @@ class Ascii:
             return ''.ljust(self.l)
         start = self._getStart(car)
         end = start + self.l
-        return self.font[ligne][start::end]
-
+        return self.font[ligne][start:end]
 
     def write(self, msg):
         output = ""
@@ -49,6 +48,6 @@ class Ascii:
         return output
 
 
-formater = new Ascii(l, h, f)
+formater = Ascii(l, h, f)
 
 print(formater.write(t))

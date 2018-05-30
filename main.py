@@ -22,6 +22,12 @@ for i in range(surface_n):
     old_x = land_x
     old_a = land_y
 
+# v^2 = v0^2 + 2aΔx
+# v >= -35
+# v0 = vitesse actuelle
+# a = -3.78 + 4
+# Δx = altitude actuelle
+
 
 print(land_x, land_y, file=sys.stderr)
 # game loop

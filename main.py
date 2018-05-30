@@ -32,8 +32,8 @@ class Ascii:
         return self.l * int(self.alpha.find('?'))
 
     def _wrileLineCar(self, ligne, car):
-        if car == ' ':
-            return ''.ljust(self.l)
+        #if car == ' ':
+        #    return ''.ljust(self.l)
         start = self._getStart(car)
         end = start + self.l
         return self.font[ligne][start:end]

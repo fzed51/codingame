@@ -8,10 +8,11 @@ def console (*msg):
     print(*msg, file=sys.stderr)
 
 
-class Strick:
+class Stricker:
 
-    def __init__(self, circuit = list(), nbTour = 0, lastPos = (0,0)):
+    def __init__(self, circuit = list(), curentCp = (0,0), nbTour = 0, lastPos = (0,0)):
         self._circuit = circuit
+        self._curentCp = curentCp
         self._nbTour = nbTour
         self._lastPos = lastPos
 
@@ -19,9 +20,18 @@ class Strick:
             next_checkpoint_dist, next_checkpoint_angle, opponent_x, 
             opponent_y ):
 
-        self._debug()
+        self._debug(x, y, next_checkpoint_x, next_checkpoint_y, 
+            next_checkpoint_dist, next_checkpoint_angle, opponent_x, 
+            opponent_y)
+            
         self._storeCP(next_checkpoint_x, next_checkpoint_y)
+        
+        trust = int(max(10,min(
+            100, 
+            10 + 100 * math.cos(self._deg2rad(next_checkpoint_angle))
+        )))
 
+        self._storePos(x, y)
         return "{0} {1} {2}".format(next_checkpoint_x, next_checkpoint_y, trust )
 
     def _storeCP(self, next_checkpoint_x, next_checkpoint_y):
@@ -30,10 +40,25 @@ class Strick:
             self._circuit.append(cp)
         else: 
             if self._circuit.index(cp) == 0:
-                self._nbTour += 1
+                console ("NOUVEAU TOUR")
+                if cp != self._curentCp:
+                    self._nbTour += 1
+        self._curentCp = cp
 
-    def _debug(self):
-        console("s = Strick(", self._circuit, ",", self._nbTour, ",", self._lastPos, ")")
+    def _storePos(self, x, y):
+        self._lastPos = (x, y)
+
+    def _debug(self, x, y, next_checkpoint_x, next_checkpoint_y, 
+            next_checkpoint_dist, next_checkpoint_angle, opponent_x, 
+            opponent_y):
+        console("s = Strick(", self._circuit, ",", self._curentCp, ",", self._nbTour, ",",
+            self._lastPos, ")")
+        console("s.getCmd(", x, ",",  y, ",",  next_checkpoint_x, ",",  next_checkpoint_y,
+            ",", next_checkpoint_dist, ",",  next_checkpoint_angle, ",",  opponent_x, ",", 
+            opponent_y, ")")
+            
+    def _deg2rad(self, deg):
+        return math.pi * deg / 180
 
 #     delta = abs(old[0]-x) + abs(old[1]-y)
 # console("delta : ", delta)

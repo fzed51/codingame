@@ -7,30 +7,38 @@ import math
 def console (*msg):
     print(*msg, file=sys.stderr)
 
+def encadre (minVal, val, maxVal):
+    return max(minVal, min(val, maxVal))
 
 class Stricker:
 
     def __init__(self, circuit = list(), curentCp = (0,0), nbTour = 0, lastPos = (0,0)):
-        self._circuit = circuit
+        self._circuit  = circuit
         self._curentCp = curentCp
-        self._nbTour = nbTour
-        self._lastPos = lastPos
+        self._nbTour   = nbTour
+        self._lastPos  = lastPos
+        self._boost    = 0
 
     def getCmd(self, x, y, next_checkpoint_x, next_checkpoint_y, 
             next_checkpoint_dist, next_checkpoint_angle, opponent_x, 
             opponent_y ):
-
         self._debug(x, y, next_checkpoint_x, next_checkpoint_y, 
             next_checkpoint_dist, next_checkpoint_angle, opponent_x, 
             opponent_y)
-            
         self._storeCP(next_checkpoint_x, next_checkpoint_y)
-        
-        trust = int(max(10,min(
-            100, 
-            10 + 100 * math.cos(self._deg2rad(next_checkpoint_angle))
-        )))
-
+        trust = encadre(
+            10, 
+            int((90 - abs(next_checkpoint_angle)) * 200 / 90), 
+            100
+            )
+        delta = self._delta(x, y)
+        if (next_checkpoint_dist - (delta * 3)) < 0:
+            trust = 0
+        if (not self._boost) and self._nbTour >= 2 and next_checkpoint_dist > 10000 and abs(next_checkpoint_angle) < 5:
+            trust = 'BOOST'
+            self._boost += 1
+        if self._boost > 0:
+            console("BOOST")
         self._storePos(x, y)
         return "{0} {1} {2}".format(next_checkpoint_x, next_checkpoint_y, trust )
 
@@ -53,34 +61,16 @@ class Stricker:
             opponent_y):
         console("s = Strick(", self._circuit, ",", self._curentCp, ",", self._nbTour, ",",
             self._lastPos, ")")
-        console("s.getCmd(", x, ",",  y, ",",  next_checkpoint_x, ",",  next_checkpoint_y,
+        console("s.getCmd(", x, ",", y, ",",  next_checkpoint_x, ",",  next_checkpoint_y,
             ",", next_checkpoint_dist, ",",  next_checkpoint_angle, ",",  opponent_x, ",", 
             opponent_y, ")")
             
     def _deg2rad(self, deg):
         return math.pi * deg / 180
-
-#     delta = abs(old[0]-x) + abs(old[1]-y)
-# console("delta : ", delta)
-# CP = (next_checkpoint_x, next_checkpoint_y)
-# 
-# if CP not in CPs:
-#     CPs.append(CP)
-# else:
-#     posCP = CPs.index(CP)
-#     tour = 1
-#     if posCP < len(CPs) - 1:
-#         if next_checkpoint_dist < 3000:
-#             next_checkpoint_x, next_checkpoint_y = CPs[posCP + 1]
-#             
-# if tour > 0 and next_checkpoint_dist > 9000 and (next_checkpoint_angle * 180 / math.pi) < 5:
-#     trust = "BOOST"
-# else :
-#     trust = min(max(10 + int( 100 * math.cos(next_checkpoint_angle * 180 / math.pi) ), 0), 100)
-#     if tour == 0 and next_checkpoint_dist < 3000:
-#         trust /= 2        
-#     if tour == 0 and next_checkpoint_dist < 1500:
-#         trust /= 2
+        
+    def _delta(self, x, y):
+        oldx, oldy = self._lastPos
+        return int( math.sqrt(pow(x-oldx, 2) + pow(y-oldy, 2)) )
 
 s = Stricker()
 
